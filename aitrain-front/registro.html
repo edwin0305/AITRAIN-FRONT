@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Registro - AiTrain</title>
+<style>
+*{ box-sizing:border-box;margin:0;padding:0;font-family:Inter,Segoe UI,Arial,Helvetica,sans-serif }
+body { 
+    background:#0f0f0f; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; color:#fff;
+}
+.card { background:#1a1a1a; border-radius:12px; border: 2px solid #ef4444; box-shadow: 0 0 20px #ef4444, 0 8px 30px rgba(2,6,23,0.5); width:100%; max-width:920px; display:flex; overflow:hidden;}
+.left { flex:1; padding:40px; background:#000; color:#fff; display:flex; flex-direction:column; justify-content:center; gap:16px;}
+.left .logo { display:flex;gap:12px;align-items:center }
+.left .logo img { width:64px;height:auto }
+.left h1 { font-size:28px;margin-top:6px }
+.left p { color:rgba(255,255,255,0.85);max-width:320px;line-height:1.5 }
+.left ul { list-style:none;margin-top:8px;padding-left:0;color:rgba(255,255,255,0.85) }
+.left ul li { margin-bottom:6px }
+
+.right { flex:1;padding:32px 40px; display:flex; flex-direction:column; justify-content:center; gap:16px }
+h2 { font-size:22px;color:#fff;margin-bottom:4px }
+p.sub { color:#ccc;margin-bottom:24px;line-height:1.5 }
+
+form { display:grid;grid-template-columns:repeat(2,1fr);gap:12px }
+.full { grid-column:1/3 }
+label { font-size:13px;color:#f0f0f0;margin-bottom:6px;display:block }
+input { width:100%; padding:10px 12px; border-radius:8px; border:1px solid #555; background:#222; color:#fff; outline:none; font-size:14px;}
+input::placeholder { color:#888; }
+input:focus { border-color:#ef4444; box-shadow:0 0 8px #ef4444; }
+
+.actions { grid-column:1/3; display:flex; flex-direction:column; gap:8px; margin-top:6px }
+button { background:#ef4444;color:#fff;border:none;padding:12px;border-radius:8px; font-weight:600;cursor:pointer;transition:0.2s }
+button:hover { background:#ff1a1a; }
+button.secondary { background:#333;color:#fff; }
+
+#mensaje { grid-column:1/3;text-align:center;padding:10px;border-radius:8px;display:none; transition: all 0.3s ease; }
+.login-link { grid-column:1/3; text-align:center; color:#ccc; }
+.login-link a { color:#ef4444; text-decoration:none; }
+.login-link a:hover { text-decoration:underline; }
+
+@media (max-width:780px) { form{grid-template-columns:1fr} .left{display:none} }
+</style>
+</head>
+<body>
+<div class="card" role="main">
+    <div class="left" aria-hidden="true">
+        <div class="logo">
+            <img src="brazo.png" alt="AiTrain logo" />
+            <div style="font-weight:700;font-size:18px">Ai<span style="color:#f43f5e">Train</span></div>
+        </div>
+        <h1>Únete a la revolución del fitness con IA</h1>
+        <p>Crea tu cuenta y comienza tu transformación física con rutinas personalizadas y seguimiento inteligente.</p>
+        <ul>
+            <li>✓ Rutinas personalizadas con IA</li>
+            <li>✓ Seguimiento detallado de progreso</li>
+            <li>✓ Ajustes dinámicos según tu rendimiento</li>
+            <li>✓ Recomendaciones nutricionales</li>
+        </ul>
+    </div>
+
+    <div class="right">
+        <div>
+            <h2>Crear cuenta</h2>
+            <p class="sub">Rellena los datos para registrarte en AiTrain.</p>
+        </div>
+
+        <form id="registerForm" novalidate>
+            <div>
+                <label for="nombre">Nombre</label>
+                <input id="nombre" type="text" placeholder="usuario" required />
+            </div>
+            <div>
+                <label for="apellido">Apellido</label>
+                <input id="apellido" type="text" placeholder="prueba" required />
+            </div>
+            <div>
+                <label for="telefono">Teléfono</label>
+                <input id="telefono" type="text" placeholder="3107924077" required />
+            </div>
+            <div class="full">
+                <label for="email">Email</label>
+                <input id="email" type="email" placeholder="usuario@ejemplo.com" required />
+            </div>
+            <div>
+                <label for="password">Contraseña</label>
+                <input id="password" type="password" placeholder="mauro" required minlength="6" />
+            </div>
+            <div>
+                <label for="edad">Edad</label>
+                <input id="edad" type="number" min="1" max="120" placeholder="20" required />
+            </div>
+
+            <div class="actions full">
+                <button type="submit">Crear cuenta</button>
+                <button type="button" class="secondary" id="limpiarBtn">Limpiar</button>
+            </div>
+
+            <div class="login-link full">
+                ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
+            </div>
+
+            <div id="mensaje" class="full" role="status"></div>
+        </form>
+    </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAAwm2LHCPY5pn-CFq5x_gI9VFgkEt3elc",
+    authDomain: "aitrain-4a720.firebaseapp.com",
+    projectId: "aitrain-4a720",
+    storageBucket: "aitrain-4a720.firebasestorage.app",
+    messagingSenderId: "600939007220",
+    appId: "1:600939007220:web:09d9c0f57c7b449f3062a1",
+    measurementId: "G-YYDK02V0LC"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const API_SAVE = 'http://localhost:8080/api/aitrain/usuario/save';
+const form = document.getElementById('registerForm');
+const mensajeDiv = document.getElementById('mensaje');
+const limpiarBtn = document.getElementById('limpiarBtn');
+
+function mostrarMensaje(text, tipo='info') {
+    mensajeDiv.style.display='block';
+    mensajeDiv.textContent = text;
+    if(tipo==='ok'){
+        mensajeDiv.style.background='#0a261f';
+        mensajeDiv.style.color='#0fff90';
+        mensajeDiv.style.border='1px solid #0fff90';
+    }else if(tipo==='error'){
+        mensajeDiv.style.background='#2a0a0a';
+        mensajeDiv.style.color='#ff4d4d';
+        mensajeDiv.style.border='1px solid #ff4d4d';
+    }else{
+        mensajeDiv.style.background='#1a1a2e';
+        mensajeDiv.style.color='#ccc';
+        mensajeDiv.style.border='1px solid #555';
+    }
+}
+
+limpiarBtn.addEventListener('click', ()=>{
+    form.reset();
+    mensajeDiv.style.display='none';
+});
+
+form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    mensajeDiv.style.display='none';
+
+    const nombre = document.getElementById('nombre').value.trim();
+    const apellido = document.getElementById('apellido').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+    const edad = document.getElementById('edad').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    if(!nombre || !apellido || !telefono || !edad || !email || !password){
+        mostrarMensaje('❌ Todos los campos son obligatorios', 'error');
+        return;
+    }
+
+    if(password.length < 6){
+        mostrarMensaje('❌ La contraseña debe tener al menos 6 caracteres', 'error');
+        return;
+    }
+
+    try{
+        // Crear usuario en Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Enviar correo de verificación
+        await sendEmailVerification(user);
+
+        // Guardar datos extra en backend
+        const payload = { nombre, apellido, telefono, edad:Number(edad), email, password };
+        const res = await fetch(API_SAVE,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify(payload)
+        });
+
+        const text = await res.text();
+        let data;
+        try{ data = JSON.parse(text); }catch{ data = text; }
+
+        if(res.ok){
+            mostrarMensaje('✅ Registro exitoso! Revisa tu correo para verificar la cuenta. Redirigiendo...', 'ok');
+            setTimeout(()=>{ window.location.href='registro_exitoso.html'; },2000);
+        }else{
+            mostrarMensaje('❌ ' + (data.message || data || 'Error al guardar usuario en backend'), 'error');
+        }
+
+    }catch(error){
+        mostrarMensaje('⚠️ Error: ' + error.message, 'error');
+    }
+});
+</script>
+</body>
+</html>
