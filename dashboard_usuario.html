@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Dashboard - AiTrain</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0d0d0d;
+            color: #fff;
+        }
+        
+        /* Header Styles */
+        .dashboard-header {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo img {
+            width: 55px;
+            height: auto;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .logo-text span {
+            color: #ef4444;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            border: none;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background-color: #ef4444;
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background-color: #dc2626;
+            transform: scale(1.05);
+        }
+        
+        .btn-outline {
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            background: transparent;
+        }
+        
+        .btn-outline:hover {
+            background-color: #ef4444;
+            color: #fff;
+        }
+        
+        /* Main Content */
+        .dashboard-main {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .welcome-section {
+            margin-bottom: 2rem;
+        }
+        
+        .welcome-section h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+        
+        .welcome-section p {
+            color: #ccc;
+            font-size: 1.1rem;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: #1a1a1a;
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+        
+        .icon-calories {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+        
+        .icon-workouts {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid #22c55e;
+        }
+        
+        .icon-streak {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+        
+        .icon-weight {
+            background-color: rgba(168, 85, 247, 0.1);
+            color: #a855f7;
+            border: 1px solid #a855f7;
+        }
+        
+        .stat-info h3 {
+            font-size: 0.9rem;
+            color: #ccc;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .stat-change {
+            font-size: 0.8rem;
+            color: #22c55e;
+            margin-top: 0.3rem;
+        }
+        
+        .stat-change.negative {
+            color: #ef4444;
+        }
+        
+        /* Workout Section */
+        .workout-section {
+            background-color: #1a1a1a;
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+            margin-bottom: 2rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .workout-card {
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .workout-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .workout-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .workout-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 1px solid #f59e0b;
+        }
+        
+        .status-completed {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid #22c55e;
+        }
+        
+        .workout-meta {
+            display: flex;
+            gap: 1rem;
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .workout-exercises {
+            margin-bottom: 1rem;
+        }
+        
+        .exercise-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .exercise-name {
+            font-weight: 500;
+            color: #fff;
+        }
+        
+        .exercise-sets {
+            color: #ccc;
+        }
+        
+        .workout-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* Content Layout */
+        .content-sections {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-header {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="logo">
+            <img src="brazo.png" alt="AiTrain Logo">
+            <div class="logo-text">Ai<span>Train</span></div>
+        </div>
+        
+        <div class="user-menu">
+            <a href="chat.html" class="btn btn-primary">
+                <i class="fas fa-robot"></i> Chatbot IA
+            </a>
+            <a href="perfil.html" class="btn btn-outline">
+                <i class="fas fa-user"></i> Perfil
+            </a>
+            <button class="btn btn-outline" onclick="cerrarSesion()">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <h1 id="welcomeTitle">¡Bienvenido de nuevo!</h1>
+            <p id="welcomeSubtitle">Tu rutina de hoy está lista. ¿Preparado para entrenar?</p>
+        </section>
+
+        <!-- STATS DEL USUARIO -->
+        <div class="stats-grid">
+            <!-- Peso -->
+            <div class="stat-card">
+                <div class="stat-icon icon-weight">
+                    <i class="fas fa-weight"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Peso</h3>
+                    <div class="stat-value" id="valorPeso">0 kg</div>
+                    <div class="stat-change" id="cambioPeso">Cargando...</div>
+                </div>
+            </div>
+
+            <!-- Estatura -->
+            <div class="stat-card">
+                <div class="stat-icon icon-streak">
+                    <i class="fas fa-ruler-vertical"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Estatura</h3>
+                    <div class="stat-value" id="valorEstatura">0 cm</div>
+                    <div class="stat-change">Tu altura actual</div>
+                </div>
+            </div>
+
+            <!-- IMC -->
+            <div class="stat-card">
+                <div class="stat-icon icon-calories">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>IMC</h3>
+                    <div class="stat-value" id="valorIMC">0</div>
+                    <div class="stat-change" id="categoriaIMC">Cargando...</div>
+                </div>
+            </div>
+
+            <!-- Entrenamientos -->
+            <div class="stat-card">
+                <div class="stat-icon icon-workouts">
+                    <i class="fas fa-dumbbell"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Entrenamientos</h3>
+                    <div class="stat-value" id="valorEntrenamientos">0/0</div>
+                    <div class="stat-change">Esta semana</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Sections -->
+        <div class="content-sections">
+            <!-- MI RUTINA -->
+            <section class="workout-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-dumbbell"></i> Mi Rutina Actual</h2>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-play"></i> Comenzar
+                    </button>
+                </div>
+                
+                <div class="workout-card">
+                    <div class="workout-header">
+                        <h3 class="workout-title" id="rutinaTitulo">Rutina Personalizada</h3>
+                        <span class="workout-status status-pending" id="rutinaEstado">Pendiente</span>
+                    </div>
+                    <div class="workout-meta">
+                        <span><i class="fas fa-clock"></i> <span id="rutinaDuracion">45 min</span></span>
+                        <span><i class="fas fa-bolt"></i> Intensidad: <span id="rutinaIntensidad">Media</span></span>
+                        <span><i class="fas fa-dumbbell"></i> <span id="rutinaEjercicios">6 ejercicios</span></span>
+                    </div>
+                    <div class="workout-exercises" id="rutinaEjerciciosLista">
+                        <!-- Los ejercicios se cargarán aquí dinámicamente -->
+                    </div>
+                    <div class="workout-actions">
+                        <button class="btn btn-outline">
+                            <i class="fas fa-info-circle"></i> Detalles
+                        </button>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-sync-alt"></i> Modificar
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MI ALIMENTACIÓN -->
+            <section class="workout-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-apple-alt"></i> Mi Alimentación</h2>
+                    <button class="btn btn-outline">
+                        Ver Detalles
+                    </button>
+                </div>
+                <div class="workout-card">
+                    <p id="alimentacionText">Todavía no se ha generado tu alimentación. Solicítala al chatbot.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+ // =====================================
+    // CARGAR VALORACIÓN DEL USUARIO
+    // =====================================
+    async function cargarValoracion() {
+        const email = localStorage.getItem("aitrain_user");
+        
+        if(!email) {
+            mostrarDatosEjemplo();
+            actualizarInterfazUsuario(null);
+            return;
+        }
+
+        try {
+            const res = await fetch(`http://localhost:8080/api/aitrain/valoracion/buscar/${email}`);
+            if(!res.ok) {
+                mostrarDatosEjemplo();
+                actualizarInterfazUsuario(email);
+                return;
+            }
+            const data = await res.json();
+            const v = data.valoracion;
+
+            mostrarDatosReales(v.pesoKg, v.estaturaCm, v.imc);
+            actualizarInterfazUsuario(email);
+
+        } catch (e) {
+            console.error("Error cargando valoración.");
+            mostrarDatosEjemplo();
+            actualizarInterfazUsuario(email);
+        }
+    }
+
+    // =====================================
+    // MOSTRAR DATOS DE EJEMPLO
+    // =====================================
+    function mostrarDatosEjemplo() {
+        document.getElementById("valorPeso").innerText = "75 kg";
+        document.getElementById("cambioPeso").innerText = "+0.5 kg este mes";
+        document.getElementById("cambioPeso").className = "stat-change negative";
+
+        document.getElementById("valorEstatura").innerText = "175 cm";
+
+        document.getElementById("valorIMC").innerText = "24.5";
+        document.getElementById("categoriaIMC").innerText = "Peso normal";
+        document.getElementById("categoriaIMC").className = "stat-change";
+
+        document.getElementById("valorEntrenamientos").innerText = "3/5";
+
+        document.getElementById("rutinaTitulo").innerText = "Rutina Superior - Fuerza";
+        document.getElementById("rutinaDuracion").innerText = "45 min";
+        document.getElementById("rutinaIntensidad").innerText = "Alta";
+        document.getElementById("rutinaEjercicios").innerText = "6 ejercicios";
+        
+        const ejerciciosEjemplo = [
+            { nombre: "Press de Banca", series: "4x8-10" },
+            { nombre: "Dominadas", series: "3x6-8" },
+            { nombre: "Press Militar", series: "3x10-12" },
+            { nombre: "Curl de Bíceps", series: "3x12-15" }
+        ];
+        
+        mostrarEjercicios([{ nombreDia: "Lunes", ejercicios: ejerciciosEjemplo }]);
+
+        document.getElementById("alimentacionText").innerText = "🥗 Proteínas 40%, Carbs 40%, Grasas 20% - 2200 kcal";
+    }
+
+    // =====================================
+    // MOSTRAR DATOS REALES
+    // =====================================
+    function mostrarDatosReales(peso, estatura, imc) {
+        document.getElementById("valorPeso").innerText = peso + " kg";
+        document.getElementById("valorEstatura").innerText = estatura + " cm";
+        document.getElementById("valorIMC").innerText = imc.toFixed(1);
+        
+        let categoria = "";
+        let clase = "stat-change";
+        if(imc < 18.5) {
+            categoria = "Bajo peso";
+            clase = "stat-change negative";
+        } else if(imc < 25) {
+            categoria = "Peso normal";
+        } else if(imc < 30) {
+            categoria = "Sobrepeso";
+            clase = "stat-change negative";
+        } else {
+            categoria = "Obesidad";
+            clase = "stat-change negative";
+        }
+        
+        document.getElementById("categoriaIMC").innerText = categoria;
+        document.getElementById("categoriaIMC").className = clase;
+
+        document.getElementById("alimentacionText").innerText = "🥗 Plan nutricional personalizado basado en tus métricas";
+    }
+
+    // =====================================
+    // MOSTRAR EJERCICIOS AGRUPADOS POR DÍA
+    // =====================================
+    function mostrarEjercicios(ejerciciosPorDia) {
+        const container = document.getElementById("rutinaEjerciciosLista");
+        container.innerHTML = "";
+
+        ejerciciosPorDia.forEach(dia => {
+            const diaContainer = document.createElement('div');
+            diaContainer.style.marginBottom = '1rem';
+
+            const diaTitulo = document.createElement('h4');
+            diaTitulo.innerText = dia.nombreDia;
+            diaTitulo.style.color = '#ef4444';
+            diaTitulo.style.marginBottom = '0.5rem';
+            diaContainer.appendChild(diaTitulo);
+
+            dia.ejercicios.forEach(ej => {
+                const exerciseItem = document.createElement('div');
+                exerciseItem.className = 'exercise-item';
+                exerciseItem.innerHTML = `
+                    <span class="exercise-name">${ej.nombre}</span>
+                    <span class="exercise-sets">${ej.series}x${ej.repeticiones || ''}</span>
+                `;
+                diaContainer.appendChild(exerciseItem);
+            });
+
+            container.appendChild(diaContainer);
+        });
+    }
+
+    // =====================================
+    // ACTUALIZAR INTERFAZ SEGÚN USUARIO
+    // =====================================
+    function actualizarInterfazUsuario(email) {
+        if (email) {
+            const userName = email.split('@')[0];
+            const nombreMostrar = userName.charAt(0).toUpperCase() + userName.slice(1);
+            document.getElementById("welcomeTitle").textContent = `¡Bienvenido de nuevo, ${nombreMostrar}!`;
+            document.getElementById("welcomeSubtitle").textContent = "Tu rutina personalizada está lista";
+            document.getElementById("valorEntrenamientos").textContent = "4/5";
+        } else {
+            document.getElementById("welcomeTitle").textContent = "¡Bienvenido a AiTrain!";
+            document.getElementById("welcomeSubtitle").textContent = "Explora las funciones del dashboard";
+            document.getElementById("valorEntrenamientos").textContent = "0/0";
+            document.getElementById("rutinaEstado").textContent = "Demo";
+        }
+    }
+
+    // =====================================
+    // CARGAR RUTINA Y PLAN ALIMENTICIO DEL USUARIO
+    // =====================================
+    async function cargarRutinaYPlan() {
+        const email = localStorage.getItem("aitrain_user");
+        if (!email) return;
+
+        try {
+            // ===== RUTINA =====
+            const resRutina = await fetch(`http://localhost:8081/api/aitrain/rutinas/usuario/${email}`);
+            if (resRutina.ok) {
+                const dataRutina = await resRutina.json();
+                if (dataRutina && dataRutina.length > 0) {
+                    const ultimaRutina = dataRutina[dataRutina.length - 1];
+
+                    document.getElementById("rutinaTitulo").innerText = ultimaRutina.nombre || "Rutina Personalizada";
+                    document.getElementById("rutinaEstado").innerText = "Pendiente";
+                    document.getElementById("rutinaDuracion").innerText = `${ultimaRutina.duracionSemanas*45} min`;
+                    document.getElementById("rutinaIntensidad").innerText = "Media";
+                    document.getElementById("rutinaEjercicios").innerText = `${ultimaRutina.dias.reduce((acc,d)=>acc+d.ejercicios.length,0)} ejercicios`;
+
+                    // Agrupar ejercicios por día
+                    const ejerciciosPorDia = ultimaRutina.dias.map(dia => ({
+                        nombreDia: dia.nombreDia,
+                        ejercicios: dia.ejercicios.map(ej => ({
+                            nombre: ej.nombre,
+                            series: ej.series,
+                            repeticiones: ej.repeticiones
+                        }))
+                    }));
+                    mostrarEjercicios(ejerciciosPorDia);
+                }
+            }
+
+            // ===== PLAN ALIMENTICIO =====
+            const resPlan = await fetch(`http://localhost:8082/api/aitrain/nutricion/usuario/${email}`);
+            if (resPlan.ok) {
+                const dataPlan = await resPlan.json();
+                if (dataPlan && dataPlan.length > 0) {
+                    const ultimoPlan = dataPlan[dataPlan.length - 1];
+                    let textoPlan = '';
+                    ultimoPlan.dias.forEach(dia => {
+                        textoPlan += `📅 ${dia.nombreDia}:\n`;
+                        dia.comidas.forEach(c => {
+                            textoPlan += `- ${c.nombre}: ${c.descripcion} (${c.calorias} kcal)\n`;
+                        });
+                        textoPlan += '\n';
+                    });
+                    document.getElementById("alimentacionText").innerText = textoPlan.trim();
+                }
+            }
+
+        } catch (error) {
+            console.error("Error cargando rutina o plan:", error);
+        }
+    }
+
+    // Cargar datos al iniciar
+    document.addEventListener('DOMContentLoaded', function() {
+        cargarValoracion();
+        cargarRutinaYPlan();
+    });
+
+    // =====================================
+    // CERRAR SESIÓN
+    // =====================================
+    function cerrarSesion() {
+        const isLoggedIn = localStorage.getItem("aitrain_logged");
+        
+        if (isLoggedIn) {
+            localStorage.removeItem("aitrain_logged");
+            localStorage.removeItem("aitrain_user");
+            localStorage.removeItem("aitrain_tipo");
+            window.location.href = "login.html";
+        } else {
+            window.location.href = "login.html";
+        }
+    }
+
+    </script>
+</body>
+</html>
